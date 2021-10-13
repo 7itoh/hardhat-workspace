@@ -1,0 +1,7 @@
+@use '../../global/variables' as v;
+
+.button_sample_container {
+  button {
+    background-color: v.$sass-test;
+  }
+}
