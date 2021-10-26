@@ -1304,6 +1304,13 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@eth-optimism/hardhat-ovm@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@eth-optimism/hardhat-ovm/-/hardhat-ovm-0.2.3.tgz#91200f481d47886b4a841b4dd825f9431c8676ef"
+  integrity sha512-QBjAqC7ECl42Oz8qxWGgVOGPvaNdItQwgoBvAd4z9qSt5ghBZFtbwBSf4Ot3Zq3sOZp3FGcjZ6N5eeWn9l6kHQ==
+  dependencies:
+    node-fetch "^2.6.1"
+
 "@ethereum-waffle/chai@^3.4.0":
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/@ethereum-waffle/chai/-/chai-3.4.0.tgz#2477877410a96bf370edd64df905b04fb9aba9d5"
@@ -2101,6 +2108,11 @@
   version "1.6.22"
   resolved "https://registry.yarnpkg.com/@mdx-js/util/-/util-1.6.22.tgz#219dfd89ae5b97a8801f015323ffa4b62f45718b"
   integrity sha512-H1rQc1ZOHANWBvPcW+JpGwr+juXSxM8Q8YCkm3GhZd8REu1fHR3z99CErO1p9pkcfcxZnMdIZdIsXkOHY0NilA==
+
+"@metamask/detect-provider@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/detect-provider/-/detect-provider-1.2.0.tgz#3667a7531f2a682e3c3a43eaf3a1958bdb42a696"
+  integrity sha512-ocA76vt+8D0thgXZ7LxFPyqw3H7988qblgzddTDA6B8a/yU0uKV42QR/DhA+Jh11rJjxW0jKvwb5htA6krNZDQ==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"

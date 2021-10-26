@@ -4,10 +4,11 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "test": "yarn workspace hardhat_dev test",
+    "test": "yarn workspace hardhatdev test",
     "dev": "run-p dev:*",
-    "dev:run-localchain": "yarn workspace hardhat_dev localchain",
-    "dev:frontend": "wait-on http://localhost:8545 && yarn workspace frontend_dev dev"
+    "dev:run-localchain": "yarn workspace hardhatdev localchain",
+    "dev:run-localchain-deploy": "wait-on http://localhost:8545 && yarn workspace hardhatdev localchain-deploy",
+    "frontend": "wait-on http://localhost:8545 && yarn workspace frontdev dev"
   },
   "workspaces": {
     "packages": [

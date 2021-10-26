@@ -5,20 +5,23 @@
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "compile": "hardhat compile",
-    "test": "hardhat test dist/test/sample-test.js",
+    "test": "hardhat test dist/test/owner-test.js",
     "deploy": "hardhat run dist/scripts/sample-script.js --network localhost",
     "localchain": "hardhat node",
     "localchain-test": "hardhat test  --network localhost dist/test/sample-test.js",
-    "localchain-deploy": "hardhat run --network localhost dist/scripts/sample-script.js",
+    "localchain-deploy": "hardhat run --network localhost dist/scripts/owner-script.js",
     "testnetwork-ropsten-test": "hardhat test --network ropsten dist/test/sample-test.js",
     "testnetwork-ropsten-deploy": "hardhat run --network ropsten dist/scripts/sample-script.js",
-    "console": "hardhat console"
+    "console": "hardhat console",
+    "optimistic-test": "hardhat --network optimistic test dist/test/sample-test.js",
+    "optimistic-console": "hardhat --network optimistic console"
   },
   "devDependencies": {
     "@defi-wonderland/smock": "^2.0.7",
     "@nomiclabs/ethereumjs-vm": "^4.2.2",
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@nomiclabs/hardhat-web3": "^2.0.0",
     "@typechain/ethers-v5": "^7.2.0",
     "@typechain/hardhat": "^2.3.1",
     "@types/chai": "^4.2.22",
@@ -32,9 +35,11 @@
     "ts-node": "^10.3.0",
     "tsconfig-paths": "^3.11.0",
     "typechain": "^5.2.0",
-    "typescript": "^4.4.4"
+    "typescript": "^4.4.4",
+    "web3": "^1.6.0"
   },
   "dependencies": {
+    "@eth-optimism/hardhat-ovm": "^0.2.3",
     "@openzeppelin/contracts": "^4.3.1"
   }
 }

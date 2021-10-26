@@ -16,12 +16,21 @@ declare module "hardhat/types/runtime" {
       name: "Greeter",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Greeter__factory>;
+    getContractFactory(
+      name: "Owner",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Owner__factory>;
 
     getContractAt(
       name: "Greeter",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Greeter>;
+    getContractAt(
+      name: "Owner",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Owner>;
 
     // default types
     getContractFactory(

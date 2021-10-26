@@ -19,26 +19,44 @@ class TestNetContract {
         this._factory = new ethers.ContractFactory(this._abi, this._bytecode, this._signer);
      }
 
-    private async deployContractToTestNet(): Promise<void> {
+    private async deployContractToTestNet(): Promise<ethers.Contract> {
         const deployContract = await this._factory.deploy(contractName);
 
         this._address = deployContract.address;
-        console.log(deployContract, this._address);
+        // console.log(deployContract, this._address);
 
-        const net = await this._signer.provider.getNetwork();
-        console.log(net.chainId);
+        // const net = await this._signer.provider.getNetwork();
+        // console.log(net.chainId);
+
+        return this.getTestNetContract()
+        // return deployContract;
     }
 
     private async getTestNetContract(): Promise<ethers.Contract> {
-        const contract = new ethers.Contract(this._address, this._abi, this._provider);
-        return await contract
+        let contract;
+        try {
+            return contract = await new ethers.Contract(this._address, this._abi, this._provider);
+        } catch (err) {
+            console.log(err);
+        } finally {
+            contract = null;
+        }
     }
 
     public onDeployContractButton(): void {
         this.deployContractToTestNet();
     }
 
+    public loadContract(): void {
+        this.deployContractToTestNet();
+    }
+
     public dispTestNetContractButton(): void {
+        const contract = this.getTestNetContract();
+        console.log(contract, this._address);
+    }
+
+    public viewTestNetContract(): void {
         const contract = this.getTestNetContract();
         console.log(contract, this._address);
     }

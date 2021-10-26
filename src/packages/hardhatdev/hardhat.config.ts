@@ -6,6 +6,7 @@ import '@nomiclabs/hardhat-waffle'
 import '@typechain/hardhat'
 import '@typechain/hardhat/dist/type-extensions'
 import 'tsconfig-paths/register'
+import '@nomiclabs/hardhat-web3'
 
 task("accounts", "Prints the list of accounts", async (args: HardhatArguments, hre: HardhatRuntimeEnvironment): Promise<void> => {
   const accounts = await hre.ethers.getSigners();
@@ -25,6 +26,11 @@ const config: HardhatUserConfig = {
   networks: {
     localhost: {
       chainId: 31337,
+    },
+    optimistic: {
+      url: 'http://ops_l2geth_1:8545',
+      accounts: { mnemonic: 'test test test test test test test test test test test junk' },
+      gasPrice: 15000000,
     }
   },
   solidity: {
