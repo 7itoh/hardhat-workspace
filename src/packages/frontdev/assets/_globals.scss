@@ -1,5 +1,15 @@
+@use './global/variables' as v;
+
 :root {
-  --c-sass: pink;
+  --c-sass: v.$base-secondary-color;
+
+  a {
+    text-decoration: none;
+  }
+
+  li {
+    list-style: none;
+  }
 
   h1 {
     color: var(--c-sass);

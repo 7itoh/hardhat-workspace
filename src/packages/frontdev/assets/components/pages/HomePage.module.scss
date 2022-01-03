@@ -1,0 +1,42 @@
+@use '../../global/variables' as v;
+
+.homePage_container {
+  display: flex;
+  justify-content: space-between;
+  width: 95%;
+  &__guide {
+    display: flex;
+    align-items: center;
+    width: 65%;
+    background-color: v.$base-secondary-color;
+    color: v.$base-primary-color;
+    &___title {
+      width: 100%;
+      text-align: center;
+      h3 {
+        font-size: 24px;
+        font-weight: bold;
+      }
+    }
+  }
+  &__containts {
+    width: 90%;
+    &___guide {
+      width: 100%;
+      display: flex;
+      align-items: baseline;
+      &___title {
+        text-align: center;
+        width: 100%;
+      }
+      &___event {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+    }
+    &___items {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,32 @@
+@use '../../global/variables' as v;
+
+.createContract_container {
+  display: flex;
+  justify-content: space-between;
+  width: 95%;
+  height: 650px;
+  &__guide {
+    display: flex;
+    align-items: center;
+    width: 65%;
+    background-color: v.$base-primary-color;
+    color: v.$base-secondary-color;
+    &___title {
+      width: 100%;
+      text-align: center;
+      h3 {
+        font-size: 24px;
+        font-weight: bold;
+      }
+    }
+  }
+  &__containts {
+    display: flex;
+    justify-content: center;
+    width: 90%;
+    &___items {
+      width: 100%;
+      padding-top: 25%;
+    }
+  }
+}

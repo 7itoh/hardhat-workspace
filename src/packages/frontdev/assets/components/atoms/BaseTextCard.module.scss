@@ -1,0 +1,41 @@
+@use '../../global/variables' as v;
+
+.baseTextCard_container {
+  font-size: 14px;
+  font-weight: v.$base-font-weight;
+
+  &__medium {
+    width: 100%;
+  }
+  &__small {
+    width: 15%;
+  }
+  &__title {
+    &___labels {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &____primary {
+        color: v.$base-secondary-color;
+        background-color: v.$base-primary-color;
+        border-color: v.$base-secondary-color;
+        border: 2px solid;
+        border-radius: 0.4rem;
+      }
+      &____secondary {
+        color: v.$base-primary-color;
+        background-color: v.$base-secondary-color;
+        border-color: v.$base-primary-color;
+        border: 2px solid;
+        border-radius: 0.4rem;
+      }
+      &____text {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+      &____value {
+        text-align: center;
+      }
+    }
+  }
+}

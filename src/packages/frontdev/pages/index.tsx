@@ -1,198 +1,136 @@
-import { useState, useEffect } from 'react'
-import detectEthereumProvider from '@metamask/detect-provider'
-import { abi } from '../artifacts/Owner.json'
-import { ethers, providers } from 'ethers'
+import { VFC } from "react";
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from "next/router";
 
-const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+import detectEthereumProvider from '@metamask/detect-provider';
+import { factoryAddress, factoryAbi } from '../utils/provider.index';
+import { ethers, providers } from 'ethers';
 
-const Home: React.FC = () => {
+import { HomeLayout } from '../components/templates/HomeLayout';
+import { BaseCard } from '../components/atoms/BaseCard';
+import { BaseButton } from '../components/atoms/BaseButton';
 
-  const [ owner, setOwner ] = useState('');
-  const [ players, setPlayers ] = useState(0);
-  const [ ether, setEther ] = useState('');
-  const [ winner, setWinner ] = useState('');
+import styles from '../assets/components/pages/HomePage.module.scss';
 
-  const [ web3Api, setWeb3Api ] = useState({
-    provider: null,
-    web3: null,
-  });
+const HOME: VFC = () => {
+  const [router, setRouter] = useState(useRouter());
 
-  const [ sendContract, setSendContract ] = useState({
-    send: null,
-  })
+  const [address, setAddress] = useState<string>(factoryAddress);
+  const [signer, setSigner] = useState(undefined);
+  const [web3Api, setWeb3Api] = useState({ provider: null, web3: null });
 
-  const [ callContract, setCallContract ] = useState({
-    call: null,
-  })
+  const [sendContract, setSendContract] = useState({ send: null });
+  const [callContract, setCallContract] = useState({ call: null });
+
+  const [contractsList, setContractList] = useState<string[]>(['']);
 
   useEffect(() => {
     const loadProvider = async () => {
-      let provider: any = await detectEthereumProvider();
-      let signer;
-      let address;
-
-      if(provider){
-        provider.request({
-          method: "eth_requestAccounts"
-        });
-        setWeb3Api({
-          provider,
-          web3: new ethers.providers.Web3Provider(provider),
-        })
-
-        address = contractAddress;
-        signer = await new providers.Web3Provider(provider).getSigner()
-
-        setSendContract({
-          send: new ethers.Contract(address, abi, signer),
-        })
-      } else {
-        console.log('Please Install MetaMask');
+      let provider: any;
+      try {
+        provider = await detectEthereumProvider();
+        if (provider) {
+          provider.request({
+            method: "eth_requestAccounts"
+          });
+          setWeb3Api({
+            provider,
+            web3: new ethers.providers.Web3Provider(provider),
+          })
+          setSigner(await new providers.Web3Provider(provider).getSigner());
+        } else {
+          console.log('Please Install MetaMask');
+        }
+      } catch (err) {
+        console.log(err);
       }
     }
     loadProvider();
   }, [])
 
   useEffect(() => {
-    const deployFactory = async() => {
-      let address: string
+    const deployFactory = async () => {
       try {
-        address = await contractAddress;
-        setCallContract({
-          call: new ethers.Contract(address, abi, web3Api.web3),
-        })
+        setSendContract({ send: new ethers.Contract(address, factoryAbi, signer) });
+        setCallContract({ call: new ethers.Contract(address, factoryAbi, web3Api.web3) });
       } catch (err) {
         console.log(err);
       }
     }
     deployFactory();
-  }, [web3Api.web3])
+  }, [address, signer, web3Api.web3])
 
-  const getContractPlayers = (event) => {
-    event.preventDefault();
-    const fetchPlayers = async() => {
-      let entryPlayers
-      try{
-        entryPlayers = await callContract.call.getPlayers();
-        console.log(entryPlayers);
-        setPlayers(entryPlayers.length);
-      } catch (err){
-        console.log(err);
-      } finally {
-        entryPlayers = null;
-      }
-    }
-    fetchPlayers();
-  }
-
-  const getContractOwner = (event) => {
-    event.preventDefault();
-    const showContract = async() => {
-      let fetchOwner;
-      try{
-        fetchOwner = await callContract.call.getOwner();
-        setOwner(fetchOwner);
-      } catch (err){
-        console.log(err);
-      } finally {
-        fetchOwner = null;
-      }
-    }
-    showContract();
-  }
-
-  const addLotteryEther = (event) => {
-    event.preventDefault();
-    const setEntery = async() => {
-      setEther(await event.target.value);
-    }
-    setEntery();
-  }
-
-  const entrylotteryButton = (event) => {
-    event.preventDefault();
-    const entryLotteryPlayer = async() => {
+  useEffect(() => {
+    const fetchInitialInfo = async () => {
       try {
-        const amount = await ethers.utils.parseEther(ether);
-        await sendContract.send.setEntry({
-          from: web3Api.provider.selectedAddress,
-          value: amount 
-        });
+        setContractList(await callContract.call.getDeployedCampaigns());
       } catch (err) {
         console.log(err);
-      } finally {
-        setEther('');
       }
     }
-    entryLotteryPlayer();
-  }
+    fetchInitialInfo();
+  }, [callContract])
 
-  const pickWinnerButton = (event) => {
-    event.preventDefault();
-    const addPickWinner = async() => {
-      let win;
-      try {
-        await sendContract.send.pickWinner();
-        win = await callContract.call.getWinner();
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setWinner(win);
-      }
+  const addToDetailPage = useCallback(async (contract: string): Promise<void> => {
+    try {
+      router.push({
+        pathname: `/campaigns/detail`,
+        query: {
+          contract: contract
+        }
+      })
+    } catch (err) {
+      console.log(err);
     }
-    addPickWinner();
-  }
+  }, [router])
+
+  const addToCreatePage = useCallback(async(event: React.MouseEvent): Promise<void> => {
+    event.preventDefault();
+    try {
+      router.push('/campaigns/new')
+    } catch (err) {
+      console.log(err);
+    }
+  },[router])
 
   return (
     <>
-      <div>
-        <header>
-          <h1>Lottery Contract</h1>
-        </header>
-      </div>
-      <div>
-        <main>
-          <hr />
-          <div>
-            <h2>Who is a Owner?</h2>
-            <div>
-              <button onClick={getContractOwner} >Owner</button>
-            </div>
-            <p>{owner} is owner</p>
-          </div>
-          <hr />
-          <div>
-            <h2>How many Players Entry?</h2>
-            <div>
-              <button onClick={getContractPlayers} >Players</button>
-            </div>
-            <p>{ players }: players entry</p>
-          </div>
-          <hr />
-          <div>
-            <h2>Amount of ether to ether</h2>
-            <label>Ether Value:
-              <input type="text" value={ether} onChange={addLotteryEther} />
-            </label>
-            <div>
-              <label>Entry The Lottery
-                <button onClick={entrylotteryButton}>Enter</button>
-              </label>
+      <HomeLayout>
+        <div className={styles.homePage_container}>
+          <div className={styles.homePage_container__guide}>
+            <div className={styles.homePage_container__guide___title}>
+              <h3>Kickstarter Contract</h3>
             </div>
           </div>
-          <hr />
-          <div>
-            <h2>Time to pick a winner</h2>
-            <button onClick={pickWinnerButton}>Pick Winner</button>
+          {/* <button onClick={ test }>on</button> */}
+          <div className={styles.homePage_container__containts}>
+            <div className={styles.homePage_container__containts___guide}>
+              <div className={styles.homePage_container__containts___guide___title}>
+                <h3>Campaign Contract List</h3>
+              </div>
+              <div className={styles.homePage_container__containts___guide___event}>
+                <BaseButton onClick={ addToCreatePage } label="Go to Create Campaign"/>
+              </div>
+            </div>
+            <div className={styles.homePage_container__containts___items}>
+              <ul>
+                {contractsList.map((contract, index) => (
+                  <li key={ index }>
+                    <BaseCard
+                      index={ index }
+                      description={ contract }
+                      onClick={ () => addToDetailPage(contract) }
+                      eventGuide="Let's go to the Campaigns detail Click here!"
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <div>
-            <p>{winner} has won!</p>
-          </div>
-          <hr />
-        </main>
-      </div>
+        </div>
+      </HomeLayout>
     </>
-  )
+  );
 }
 
-export default Home
+export default HOME;

@@ -1,0 +1,45 @@
+@use '../../global/variables' as v;
+
+.baseButton_container {
+  width: 100%;
+  // height: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  &__primary {
+    button {
+      cursor: pointer;
+      font-size: v.$base-font-size;
+      font-size: v.$base-font-weight;
+      width: 100%;
+      height: 50px;
+      border-radius: 0.4rem;
+      border: 1px solid;
+      border-color: v.$base-secondary-color;
+      color: v.$base-primary-color;
+      background-color: v.$base-secondary-color;
+    }
+    :hover {
+      color: v.$base-secondary-color;
+      background-color: v.$base-primary-color;
+    }
+  }
+  &__secondary {
+    button {
+      cursor: pointer;
+      font-size: v.$base-font-size;
+      font-size: v.$base-font-weight;
+      width: 100%;
+      height: 50px;
+      border-radius: 0.4rem;
+      border: 1px solid;
+      border-color: v.$base-secondary-color;
+      color: v.$base-secondary-color;
+      background-color: v.$base-primary-color;
+    }
+    :hover {
+      color: v.$base-primary-color;
+      background-color: v.$base-secondary-color;
+    }
+  }
+}

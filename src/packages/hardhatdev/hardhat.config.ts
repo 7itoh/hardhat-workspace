@@ -1,5 +1,10 @@
 import { task, HardhatUserConfig } from 'hardhat/config'
 import { HardhatArguments, HardhatRuntimeEnvironment } from 'hardhat/types'
+import dotENV from 'dotenv';
+
+dotENV.config();
+const _api = typeof(process.env.API_URL) === 'string' ? process.env.API_URL : '';
+const _account = typeof(process.env.PRIVATE_KEY) === 'string' ? process.env.PRIVATE_KEY : '';
 
 import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-waffle'
@@ -31,6 +36,11 @@ const config: HardhatUserConfig = {
       url: 'http://ops_l2geth_1:8545',
       accounts: { mnemonic: 'test test test test test test test test test test test junk' },
       gasPrice: 15000000,
+    },
+    goerli: {
+      url: `https://goerli.infura.io/v3/${_api}`,
+      accounts: [`${_account}`],
+      gasPrice: 30000000
     }
   },
   solidity: {

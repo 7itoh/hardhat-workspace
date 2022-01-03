@@ -1,0 +1,46 @@
+@use '../../global/variables' as v;
+
+.requestList_container {
+  &__containts {
+    width: 100%;
+    &___guide {
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      align-items: baseline;
+      margin-bottom: 10px;
+      &____title {
+        width: 100%;
+        text-align: center;
+        color: v.$base-secondary-color;
+      }
+      &____event {
+        padding-right: 10px;
+        width: 50%;
+      }
+    }
+    &___items {
+      width: 100%;
+      &____table {
+        width: 100%;
+        th {
+          height: 30px;
+          background-color: v.$base-secondary-color;
+          color: v.$base-primary-color;
+        }
+        td {
+          color: v.$base-secondary-color;
+          background-color: v.$base-pastel-color;
+          text-align: center;
+          align-items: center;
+        }
+      }
+      &____info {
+        font-size: v.$base-font-size;
+        color: v.$base-secondary-color;
+        text-align: end;
+        margin-right: 20px;
+      }
+    }
+  }
+}
