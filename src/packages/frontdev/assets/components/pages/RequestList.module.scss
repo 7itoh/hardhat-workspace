@@ -35,6 +35,12 @@
           align-items: center;
         }
       }
+      &____message {
+        font-size: v.$base-font-size;
+        color: v.$base-secondary-color;
+        text-align: end;
+        margin-right: 20px;
+      }
       &____info {
         font-size: v.$base-font-size;
         color: v.$base-secondary-color;

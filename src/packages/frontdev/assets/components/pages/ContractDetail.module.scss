@@ -31,6 +31,10 @@
     &___items {
       width: 100%;
       padding-top: 25%;
+      &____message {
+        color: v.$base-secondary-color;
+        text-align: center;
+      }
       &____topage {
         padding-top: 20%;
       }

@@ -10,7 +10,7 @@ export const Footer: VFC<FOOTERPROPS> = ({
   return (
     <>
       <footer>
-        <p>{ label }</p>
+        <p>{ label } 2022</p>
       </footer>
     </>
   );

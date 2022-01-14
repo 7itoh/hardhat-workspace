@@ -3,9 +3,9 @@ import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import styles from '../../../assets/components/pages/CreateRequestPage.module.scss';
 
-import detectEthereumProvider from '@metamask/detect-provider';
+import { ethers } from 'ethers';
 import { campaignAbi } from '../../../utils/provider.index';
-import { ethers, providers } from 'ethers';
+import { useLoadProvider, useFetchCallSendMethod, useSetUserAddress } from '../../../hooks/useContract';
 
 import { KICKSTARTERPROPS } from '../../../utils/types/kickstarter.types'
 import { HomeLayout } from '../../../components/templates/HomeLayout';
@@ -13,70 +13,17 @@ import { BaseButton } from '../../../components/atoms/BaseButton';
 import { BaseInput } from '../../../components/atoms/BaseInput';
 
 const CREATEREQUEST: VFC<KICKSTARTERPROPS> = ({ contract }) => {
-  const [router, setRouter] = useState(useRouter());
-  const [address, setAddress] = useState<string>(contract);
-  const [signer, setSigner] = useState(undefined);
-  const [web3Api, setWeb3Api] = useState({ provider: null, web3: null });
-
-  const [sendContract, setSendContract] = useState({ send: null });
-  const [callContract, setCallContract] = useState({ call: null });
-
-  const [managerAddress, setManagerAddress] = useState<string>('');
-  const [userAddress, setUserAddress] = useState<string>('');
-
   const [description, setDescription] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
   const [recipient, setRecipient] = useState<string>('');
 
   const [resultMessage, setResultMessage] = useState<string>('');
 
-  useEffect(() => {
-    const loadProvider = async () => {
-      let provider: any = await detectEthereumProvider();
-      try {
-        if(provider){
-          provider.request({
-            method: "eth_requestAccounts"
-          });
-          setWeb3Api({
-            provider,
-            web3: new ethers.providers.Web3Provider(provider),
-          })
-          setSigner(await new providers.Web3Provider(provider).getSigner());
-        } else {
-          console.log('Please Install MetaMask');
-        }
-      } catch(err) {
-        console.log(err);
-      }
-    }
-    loadProvider();
-  }, [])
-
-  useEffect(() => {
-    const deployFactory = async() => {
-      try {
-        setSendContract({ send: new ethers.Contract(address, campaignAbi, signer) });
-        setCallContract({ call: new ethers.Contract(address, campaignAbi, web3Api.web3) });
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    deployFactory();
-  }, [address, signer, web3Api.web3])
-
-  useEffect(() => {
-    const fetchInitialInfo = async() => {
-      try {
-        const summary = await callContract.call.getSummary();
-        setManagerAddress(summary[4]);
-        setUserAddress(await web3Api.provider.selectedAddress);
-      } catch(err) {
-        console.log(err);
-      }
-    }
-    fetchInitialInfo();
-  }, [callContract, web3Api])
+  const { signer, web3Api } = useLoadProvider();
+  const { sendContract } = useFetchCallSendMethod(contract, signer, web3Api, campaignAbi);
+  const { userAddress } = useSetUserAddress(web3Api);
+  
+  const router = useRouter();
 
   const editDescriptionValue = (event: React.ChangeEvent<HTMLInputElement>) => setDescription(event.target.value);
   const editAmountValue = (event: React.ChangeEvent<HTMLInputElement>) => setAmount(event.target.value);
@@ -89,8 +36,7 @@ const CREATEREQUEST: VFC<KICKSTARTERPROPS> = ({ contract }) => {
       await sendContract.send.createRequest(description, setAmount, recipient, {
         from: userAddress
       });
-      console.log(await callContract.call.getSummary());
-      setResultMessage('Create Success! Please Back to Top Page')
+      setResultMessage('Create Product Success')
     } catch(err) {
       setResultMessage(err.message);
     } finally {
@@ -99,17 +45,6 @@ const CREATEREQUEST: VFC<KICKSTARTERPROPS> = ({ contract }) => {
       setDescription('');
     }
   }, [sendContract, web3Api, description, amount, recipient, userAddress])
-  
-  const test = useCallback(async (event: React.MouseEvent): Promise<void> => {
-    try {
-      console.log(await callContract.call.getRequestsCount());
-      console.log(await callContract.call.requests(0));
-      console.log(await callContract.call.requests(1));
-      console.log(await callContract.call.requests(2));
-    } catch (err) {
-      setResultMessage(err.message);
-    }
-  }, [callContract])
   
   const addBackToRequestsPage = useCallback(async (contract: string) => {
     try {
@@ -169,7 +104,7 @@ const CREATEREQUEST: VFC<KICKSTARTERPROPS> = ({ contract }) => {
               <div className={styles.createRequest_container__containts___items____toback}>
                 <BaseButton
                   label='Go Back to Request Page'
-                  onClick={ (event: React.MouseEvent) => addBackToRequestsPage(address) }
+                  onClick={ (event: React.MouseEvent) => addBackToRequestsPage(contract) }
                   isType='secondary'
                 />
               </div>
