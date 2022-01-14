@@ -5,9 +5,7 @@ import { useRouter } from "next/router";
 import { useCallback } from 'react';
 
 import { factoryAddress, factoryAbi } from '../utils/provider.index';
-import { useLoadProvider } from '../hooks/useProviderLoad';
-import { useFetchCallSendMethod } from '../hooks/useFetchCallSendMethod';
-import { useContractsList } from '../hooks/useFetchContractList';
+import { useLoadProvider, useFetchCallSendMethod, useFetchContractsList } from '../hooks/useContract';
 
 import { HomeLayout } from '../components/templates/HomeLayout';
 import { BaseCard } from '../components/atoms/BaseCard';
@@ -16,7 +14,7 @@ import { BaseButton } from '../components/atoms/BaseButton';
 const HOME: VFC = () => {
   const { signer, web3Api } = useLoadProvider();
   const { callContract } = useFetchCallSendMethod(factoryAddress, signer, web3Api, factoryAbi);
-  const { contractsList } = useContractsList(callContract);
+  const { contractsList } = useFetchContractsList(callContract);
 
   const router = useRouter();
 

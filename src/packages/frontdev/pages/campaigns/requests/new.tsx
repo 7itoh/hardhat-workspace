@@ -3,17 +3,14 @@ import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import styles from '../../../assets/components/pages/CreateRequestPage.module.scss';
 
-import { campaignAbi } from '../../../utils/provider.index';
 import { ethers } from 'ethers';
+import { campaignAbi } from '../../../utils/provider.index';
+import { useLoadProvider, useFetchCallSendMethod, useSetUserAddress } from '../../../hooks/useContract';
 
 import { KICKSTARTERPROPS } from '../../../utils/types/kickstarter.types'
 import { HomeLayout } from '../../../components/templates/HomeLayout';
 import { BaseButton } from '../../../components/atoms/BaseButton';
 import { BaseInput } from '../../../components/atoms/BaseInput';
-
-import { useLoadProvider } from '../../../hooks/useProviderLoad';
-import { useFetchCallSendMethod } from '../../../hooks/useFetchCallSendMethod';
-import { useSetUserAddress } from '../../../hooks/useSetUserAddress';
 
 const CREATEREQUEST: VFC<KICKSTARTERPROPS> = ({ contract }) => {
   const [description, setDescription] = useState<string>('');
@@ -25,6 +22,7 @@ const CREATEREQUEST: VFC<KICKSTARTERPROPS> = ({ contract }) => {
   const { signer, web3Api } = useLoadProvider();
   const { sendContract } = useFetchCallSendMethod(contract, signer, web3Api, campaignAbi);
   const { userAddress } = useSetUserAddress(web3Api);
+  
   const router = useRouter();
 
   const editDescriptionValue = (event: React.ChangeEvent<HTMLInputElement>) => setDescription(event.target.value);

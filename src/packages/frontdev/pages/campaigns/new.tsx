@@ -2,12 +2,9 @@ import { VFC, useState, useCallback } from 'react';
 import styles from '../../assets/components/pages/CreateContractPage.module.scss';
 import Link from 'next/link';
 
-import { factoryAddress, factoryAbi } from '../../utils/provider.index';
 import { ethers } from 'ethers';
-
-import { useLoadProvider } from '../../hooks/useProviderLoad';
-import { useFetchCallSendMethod } from '../../hooks/useFetchCallSendMethod';
-import { useSetUserAddress } from '../../hooks/useSetUserAddress';
+import { factoryAddress, factoryAbi } from '../../utils/provider.index';
+import { useLoadProvider, useFetchCallSendMethod, useSetUserAddress } from '../../hooks/useContract';
 
 import { HomeLayout } from '../../components/templates/HomeLayout';
 import { BaseButton } from '../../components/atoms/BaseButton';

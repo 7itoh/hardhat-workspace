@@ -4,16 +4,11 @@ import { GetServerSideProps } from "next";
 import { useRouter } from 'next/router';
 
 import { campaignAbi } from '../../../utils/provider.index';
+import { useLoadProvider, useFetchCallSendMethod, useSetUserAddress, useShowContractDetail, useFetchRequestList } from '../../../hooks/useContract';
 
 import { KICKSTARTERPROPS } from '../../../utils/types/kickstarter.types'
 import { HomeLayout } from '../../../components/templates/HomeLayout';
 import { BaseButton } from '../../../components/atoms/BaseButton';
-
-import { useLoadProvider } from '../../../hooks/useProviderLoad';
-import { useFetchCallSendMethod } from '../../../hooks/useFetchCallSendMethod';
-import { useSetUserAddress } from '../../../hooks/useSetUserAddress';
-import { useFetchInfoCreateContract } from '../../../hooks/useFetchInfoCreateContract';
-import { useFetchRequestList  } from '../../../hooks/useRequest';
 
 const REQUESTLIST: VFC<KICKSTARTERPROPS> = ({ contract }) => {
   const [resultMessage, setResultMessage] = useState<string>('');
@@ -21,8 +16,9 @@ const REQUESTLIST: VFC<KICKSTARTERPROPS> = ({ contract }) => {
   const { signer, web3Api } = useLoadProvider();
   const { callContract, sendContract } = useFetchCallSendMethod(contract, signer, web3Api, campaignAbi);
   const { userAddress } = useSetUserAddress(web3Api);
-  const { approversCount, requestCount } = useFetchInfoCreateContract(callContract);
+  const { approversCount, requestCount } = useShowContractDetail(callContract);
   const { requestListItems } = useFetchRequestList(requestCount, callContract);
+  
   const router = useRouter();
 
   const addApproverRequest = useCallback(async (index: number) => {
