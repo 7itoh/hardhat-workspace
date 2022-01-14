@@ -9,7 +9,7 @@ export type HOMEPROPS = {
 export const HomeLayout: VFC<HOMEPROPS> = ({ children }) => {
   return (
     <div>
-      <Header label="KickStarter.com" />
+      <Header label="KSC MAKER" />
       <hr />
         <main>
           { children }

@@ -1,90 +1,33 @@
-import { VFC, useState, useEffect, useCallback } from 'react';
+import { VFC, useState, useCallback } from 'react';
+import styles from '../../assets/components/pages/ContractDetail.module.scss';
 import { GetServerSideProps } from "next";
 import { useRouter } from 'next/router';
 
-import detectEthereumProvider from '@metamask/detect-provider';
 import { campaignAbi } from '../../utils/provider.index';
-import { ethers, providers } from 'ethers';
+import { ethers } from 'ethers';
+
+import { KICKSTARTERPROPS } from '../../utils/types/kickstarter.types'
+
+import { useLoadProvider } from '../../hooks/useProviderLoad';
+import { useFetchCallSendMethod } from '../../hooks/useFetchCallSendMethod';
+import { useSetUserAddress } from '../../hooks/useSetUserAddress';
+import { useFetchInfoCreateContract } from '../../hooks/useFetchInfoCreateContract';
 
 import { HomeLayout } from '../../components/templates/HomeLayout';
 import { BaseButton } from '../../components/atoms/BaseButton';
 import { BaseInput } from '../../components/atoms/BaseInput';
 import { BaseTextCard } from '../../components/atoms/BaseTextCard';
-import { KICKSTARTERPROPS } from '../../utils/types/kickstarter.types'
-import styles from '../../assets/components/pages/ContractDetail.module.scss';
 
 const CONTRACTDETAIL: VFC<KICKSTARTERPROPS> = ({ contract }) => {
-  const [router, setRouter] = useState(useRouter());
-
-  const [ address, setAddress ] = useState<string>(contract);
-  const [ signer, setSigner ] = useState(undefined);
-  const [ web3Api, setWeb3Api ] = useState({ provider: null, web3: null });
-
-  const [ sendContract, setSendContract ] = useState({ send: null });
-  const [ callContract, setCallContract ] = useState({ call: null });
-
-  const [managerAddress, setManagerAddress] = useState<string>('');
-  const [userAddress, setUserAddress] = useState<string>('');
-  const [ request, setRequest ] = useState<[]>([]);
-  const [ approversCount, setApproversCount ] = useState<number>(0);
-  const [ balance, setBalance ] = useState<string>('');
-
-  const [ minimum, setMinimum ] = useState<string>('');
   const [ amount, setAmount ] = useState<string>('');
-  const [ resultMessage, setResultMessage ] = useState<string>('');
-
-  useEffect(() => {
-    const loadProvider = async () => {
-      let provider: any = await detectEthereumProvider();
-      try {
-        if(provider){
-          provider.request({
-            method: "eth_requestAccounts"
-          });
-          setWeb3Api({
-            provider,
-            web3: new ethers.providers.Web3Provider(provider),
-          })
-          setSigner(await new providers.Web3Provider(provider).getSigner());
-        } else {
-          console.log('Please Install MetaMask');
-        }
-      } catch(err) {
-        console.log(err);
-      }
-    }
-    loadProvider();
-  }, [])
-
-  useEffect(() => {
-    const deployFactory = async() => {
-      try {
-        setSendContract({ send: new ethers.Contract(address, campaignAbi, signer) });
-        setCallContract({ call: new ethers.Contract(address, campaignAbi, web3Api.web3) });
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    deployFactory();
-  }, [address, signer, web3Api.web3])
-
-  useEffect(() => {
-    const fetchInitialInfo = async() => {
-      try {
-        const summary = await callContract.call.getSummary();
-        setMinimum(ethers.utils.formatEther(summary[0]));
-        setBalance(ethers.utils.formatEther(summary[1]));
-        setRequest(summary[2]);
-        setApproversCount(summary[3]);
-        setManagerAddress(summary[4]);
-        console.log(summary[4]);
-        setUserAddress(await web3Api.provider.selectedAddress);
-      } catch(err) {
-        console.log(err);
-      }
-    }
-    fetchInitialInfo();
-  }, [callContract, web3Api])
+  const [resultMessage, setResultMessage] = useState<string>('');
+  
+  const { signer, web3Api } = useLoadProvider();
+  const { callContract, sendContract } = useFetchCallSendMethod(contract, signer, web3Api, campaignAbi);
+  const { userAddress } = useSetUserAddress(web3Api);
+  const { minimum, balance, request, approversCount, managerAddress } = useFetchInfoCreateContract(callContract);
+  
+  const router = useRouter();
 
   const editAmountValue = (event: React.ChangeEvent<HTMLInputElement>) => setAmount(event.target.value);
 
@@ -96,7 +39,7 @@ const CONTRACTDETAIL: VFC<KICKSTARTERPROPS> = ({ contract }) => {
         from: userAddress,
         value: setAmount
       });
-      setResultMessage('Create Success! Please Back to Top Page')
+      setResultMessage('Contribute OK')
     } catch(err) {
       setResultMessage(err.message);
     } finally {
@@ -126,17 +69,14 @@ const CONTRACTDETAIL: VFC<KICKSTARTERPROPS> = ({ contract }) => {
               <h2>
                 Campaign Contract Detail
               </h2>
-              <div>
-                <p>{ resultMessage }</p>
-              </div>
               <div className={styles.contractDetail_container__guide___containts}>
                 <ul>
                   <li>
                     <BaseTextCard
-                      labelMain={`Contract : ${address}`}
-                      labelSub={`Manager : ${managerAddress}`}
-                      isMedium={true}
-                      isPrimary={ true}
+                      labelMain={`Contract : ${ contract }`}
+                      labelSub={`Manager : ${ managerAddress }`}
+                      isMedium={true }
+                      isPrimary={ true }
                     />
                   </li>
                   <li>
@@ -159,7 +99,7 @@ const CONTRACTDETAIL: VFC<KICKSTARTERPROPS> = ({ contract }) => {
                     <BaseTextCard
                       labelMain="Approvers"
                       labelValue={ request }
-                      isMedium={true}
+                      isMedium={ true }
                       isPrimary={ false}
                     />
                   </li>
@@ -167,7 +107,7 @@ const CONTRACTDETAIL: VFC<KICKSTARTERPROPS> = ({ contract }) => {
                     <BaseTextCard
                       labelMain="Requests"
                       labelValue={ approversCount }
-                      isMedium={true}
+                      isMedium={ true }
                       isPrimary={ false}
                     />
                   </li>
@@ -180,7 +120,7 @@ const CONTRACTDETAIL: VFC<KICKSTARTERPROPS> = ({ contract }) => {
               <BaseInput
                 guide="Contribute to This Contract"
                 label='wei'
-                value={amount}
+                value={ amount }
                 placeholder='0'
                 onChange={ editAmountValue }
               />
@@ -189,11 +129,14 @@ const CONTRACTDETAIL: VFC<KICKSTARTERPROPS> = ({ contract }) => {
                 isType='primary'
                 onClick={ addCreateContribute }
               />
+              <div className={styles.contractDetail_container__containts___items____message}>
+                <p>{ resultMessage }</p>
+              </div>
               <div className={styles.contractDetail_container__containts___items____topage}>
                 <BaseButton
                   label='to Create Request'
                   isType='secondary'
-                  onClick={ () => addToRequestPage(address) }
+                  onClick={ () => addToRequestPage(contract) }
                 />
               </div>
             </div>

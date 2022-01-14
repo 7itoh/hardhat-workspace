@@ -1,77 +1,25 @@
-import { VFC, useState, useEffect, useCallback } from 'react';
+import { VFC, useState, useCallback } from 'react';
 import styles from '../../assets/components/pages/CreateContractPage.module.scss';
-// import { useRouter } from "next/router";
 import Link from 'next/link';
 
-import detectEthereumProvider from '@metamask/detect-provider';
 import { factoryAddress, factoryAbi } from '../../utils/provider.index';
-import { ethers, providers } from 'ethers';
+import { ethers } from 'ethers';
+
+import { useLoadProvider } from '../../hooks/useProviderLoad';
+import { useFetchCallSendMethod } from '../../hooks/useFetchCallSendMethod';
+import { useSetUserAddress } from '../../hooks/useSetUserAddress';
 
 import { HomeLayout } from '../../components/templates/HomeLayout';
 import { BaseButton } from '../../components/atoms/BaseButton';
 import { BaseInput } from '../../components/atoms/BaseInput';
 
 const CREATECONTRACT : VFC = () => {
-  const [address, setAddress] = useState<string>(factoryAddress);
-  const [signer, setSigner] = useState(undefined);
-  const [web3Api, setWeb3Api] = useState({ provider: null, web3: null });
-
-  const [sendContract, setSendContract] = useState({ send: null });
-  const [callContract, setCallContract] = useState({ call: null });
-
-  const [managerAddress, setManagerAddress] = useState<string>('');
-  const [userAddress, setUserAddress] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
   const [resultMessage, setResultMessage] = useState<string>('');
 
-  useEffect(() => {
-    const loadProvider = async () => {
-      let provider: any;
-      try {
-        provider = await detectEthereumProvider();
-        if(provider){
-          provider.request({
-            method: "eth_requestAccounts"
-          });
-          setWeb3Api({
-            provider,
-            web3: new ethers.providers.Web3Provider(provider),
-          })
-          setSigner(await new providers.Web3Provider(provider).getSigner());
-        } else {
-          console.log('Please Install MetaMask');
-        }
-      } catch(err) {
-        console.log(err);
-      }
-    }
-    loadProvider();
-  }, [])
-
-  useEffect(() => {
-    const deployFactory = async () => {
-      try {
-        setSendContract({ send: new ethers.Contract(address, factoryAbi, signer) });
-        setCallContract({ call: new ethers.Contract(address, factoryAbi, web3Api.web3) });
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    deployFactory();
-  }, [address, signer, web3Api.web3])
-
-  useEffect(() => {
-    const fetchInitialInfo = async () => {
-      try {
-        const summary = await callContract.call.getSummary();
-        setManagerAddress(summary[4]);
-        setUserAddress(await web3Api.provider.selectedAddress);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    fetchInitialInfo();
-  }, [callContract, web3Api])
+  const { signer, web3Api } = useLoadProvider();
+  const { sendContract } = useFetchCallSendMethod(factoryAddress, signer, web3Api, factoryAbi);
+  const { userAddress } = useSetUserAddress(web3Api);
 
   const editAmountValue = (event: React.ChangeEvent<HTMLInputElement>) => setAmount(event.target.value);
 
