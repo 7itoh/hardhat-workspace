@@ -1,17 +1,7 @@
 import { useState, useEffect } from 'react';
+import { WEB3API, USERADDRESS, USERADDRESSTYPES} from './types/hooks.types';
 
-interface WEBTHREEAPITYPES {
-  provider: any | null,
-  web3: any | null
-}
-
-type USERADDRESS = string;
-
-interface USERADDRESSTYPES {
-  userAddress: USERADDRESS;
-}
-
-export const useSetUserAddress = (web3Api: WEBTHREEAPITYPES): USERADDRESSTYPES => {
+export const useSetUserAddress = (web3Api: WEB3API): USERADDRESSTYPES => {
   const [userAddress, setUserAddress] = useState<USERADDRESS>('');
 
   useEffect(() => {

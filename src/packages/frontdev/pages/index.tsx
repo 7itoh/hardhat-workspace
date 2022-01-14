@@ -2,7 +2,7 @@ import { VFC } from "react";
 import styles from '../assets/components/pages/HomePage.module.scss';
 
 import { useRouter } from "next/router";
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 
 import { factoryAddress, factoryAbi } from '../utils/provider.index';
 import { useLoadProvider } from '../hooks/useProviderLoad';

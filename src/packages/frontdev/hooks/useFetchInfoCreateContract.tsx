@@ -1,30 +1,15 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
+import { CALLCONTRACTMETHOD, MINIMUM, BALANCE, REQUEST, APPROVERSCOUNT, ADDRESS, REQUESTCOUNT, INFOCREATECONTRACT } from './types/hooks.types'
 
-type MINIMUM = string;
-type BALANCE = string;
-type REQUEST = [];
-type APPROVERSCOUNT = number;
-type ADDRESS = string;
-type REQUESTCOUNT = number;
-
-interface INFOCREATECONTRACT {
-  minimum: MINIMUM;
-  balance: BALANCE;
-  request: REQUEST;
-  approversCount: APPROVERSCOUNT;
-  managerAddress: ADDRESS;
-  requestCount: REQUESTCOUNT;
-}
-
-export const useFetchInfoCreateContract = (callContract: any): INFOCREATECONTRACT => {
+export const useFetchInfoCreateContract = (callContract: CALLCONTRACTMETHOD): INFOCREATECONTRACT => {
   
   const [ minimum, setMinimum ] = useState<MINIMUM>('');
   const [ balance, setBalance ] = useState<BALANCE>('');
   const [ request, setRequest ] = useState<REQUEST>([]);
   const [ approversCount, setApproversCount ] = useState<APPROVERSCOUNT>(0);
   const [ managerAddress, setManagerAddress ] = useState<ADDRESS>('');
-  const [ requestCount, setRequestCount ] = useState<number>(0);
+  const [ requestCount, setRequestCount ] = useState<REQUESTCOUNT>(0);
 
  
   useEffect(() => {

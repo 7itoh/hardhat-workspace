@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import detectEthereumProvider from '@metamask/detect-provider';
 import { ethers, providers } from 'ethers';
+import { SIGNER, PROVIDER, WEB3API } from './types/hooks.types'
 
 export const useLoadProvider = () => {
-  const [signer, setSigner] = useState(undefined);
-  const [web3Api, setWeb3Api] = useState({ provider: null, web3: null });
+  const [signer, setSigner] = useState<SIGNER>(undefined);
+  const [web3Api, setWeb3Api] = useState<WEB3API>({ provider: null, web3: null });
 
   useEffect(() => {
     const loadProvider = async () => {
-      let provider: any;
+      let provider: PROVIDER;
       try {
         provider = await detectEthereumProvider();
         if (provider) {

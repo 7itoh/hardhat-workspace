@@ -1,12 +1,8 @@
 import { useState, useEffect } from 'react';
-import { REQUESTTYPES } from '..//utils/types/kickstarter.types'
 import { ethers } from 'ethers';
+import { CALLCONTRACTMETHOD, REQUESTTYPES, FETCHREQUESTLIST, REQUESTCOUNT } from './types/hooks.types'
 
-interface FETCHREQUESTLIST {
-  requestListItems: REQUESTTYPES[]
-}
-
-export const useFetchRequestList = (requestCount: number, callContract: any): FETCHREQUESTLIST => {
+export const useFetchRequestList = (requestCount: REQUESTCOUNT, callContract: CALLCONTRACTMETHOD): FETCHREQUESTLIST => {
   const [requestListItems, setRequestListItems] = useState<REQUESTTYPES[]>([]);
 
   useEffect(() => {

@@ -1,12 +1,7 @@
 import { useState, useEffect } from 'react';
+import { CONTRACTSLISTTYPE, USECONTRACTLIST, CALLCONTRACTMETHOD } from './types/hooks.types'
 
-type CONTRACTSLISTTYPE = string[]
-
-interface USECONTRACTLIST {
-  contractsList: CONTRACTSLISTTYPE
-}
-
-export const useContractsList = (callContract: any): USECONTRACTLIST => {
+export const useContractsList = (callContract: CALLCONTRACTMETHOD): USECONTRACTLIST => {
   const [contractsList, setContractList] = useState<CONTRACTSLISTTYPE>(['']);
 
   useEffect(() => {
