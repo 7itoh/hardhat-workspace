@@ -55,3 +55,10 @@ export type USERADDRESS = string;
 export interface USERADDRESSTYPES {
   userAddress: USERADDRESS;
 }
+
+export type AMOUNT = string;
+export type RESULTMESSAGE = string;
+export interface CREATENEWCONTRACT {
+  resultMessage: RESULTMESSAGE;
+  addCreateContract: () => Promise<void>
+}
